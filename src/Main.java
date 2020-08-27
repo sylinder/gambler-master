@@ -3,7 +3,14 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
 
-        String input = "3H 3D 3S 9C KD 2C 3H 4S 5C 6H";
+//        String input = "3H 3D 3S 9C KD 2C 3C 4S 5C 6H"; //straight
+//        String input = "3H 3D 3S 9C KD 2C 2H 4S 4C 6H"; // three of kind
+//        String input = "3H 3D 4S 9C KD 2C 2H 4H 4C 6H"; //two pair
+//        String input = "3H 3D 4S 9C KD 2C 3C 9S 5C 6H"; //pair
+//        String input = "3C 3D 4S 9C KD 2H 3H 9H 5H 6H"; //flush
+//        String input = "3C 3D 4S 9C KD 5C 5H 9S 9C 9H"; //full house
+//        String input = "3H 3D 4S 9C KD 9C 3S 9S 9C 9H"; //four of kind
+        String input = "3H 3D 4S 9C KD 5H 6H 7H 8H 9H"; // straight flush
         PokerCards blackPokerCards = new PokerCards();
         PokerCards whitePokerCards = new PokerCards();
 
@@ -14,9 +21,11 @@ public class Main {
         if (blackRank == whiteRank) {
             handleEqualRank(blackRank, blackPokerCards, whitePokerCards);
         } else if (blackRank > whiteRank) {
-            System.out.println("black win...");
+            String str = handleNoEqualRank(blackRank, blackPokerCards);
+            System.out.println("black win. - with " + str);
         } else {
-            System.out.println("white win..." + whiteRank);
+            String str = handleNoEqualRank(whiteRank, whitePokerCards);
+            System.out.println("white win. - with " + str);
         }
 
 //        handleInput(input, blackCards, whiteCards);
@@ -27,9 +36,56 @@ public class Main {
 //        System.out.println(whiteCards);
     }
 
-    public static String getTips(int rank) {
+    public static String handleNoEqualRank(int rank, PokerCards pokerCards) {
+        int[] cardNumber = pokerCards.getCardNumber();
+        char[] cardChar = pokerCards.getCardChar();
         if (rank == 9) {
-
+            return "straight flush: " +  cardNumber[0] + " to " + cardNumber[4];
+        }
+        if (rank == 8) {
+            return "four of a kind: " + cardNumber[2];
+        }
+        if (rank == 7) {
+            int first = cardNumber[2];
+            int second;
+            if (cardNumber[0] != first) {
+                second = cardNumber[0];
+            } else {
+                second = cardNumber[4];
+            }
+            return "full house: " + first + " over " + second;
+        }
+        if (rank == 6) {
+            return "flush: " + cardChar[0];
+        }
+        if (rank == 5) {
+            return "straight: " + cardNumber[0] + " to " + cardNumber[4];
+        }
+        if (rank == 4) {
+            return "three of a kind: " + cardNumber[2];
+        }
+        if (rank == 3) {
+            int first = -1;
+            int second = -1;
+            boolean mark = false;
+            for (int i = 0; i < cardNumber.length - 1; i++) {
+                if (cardNumber[i] == cardNumber[i + 1] && !mark) {
+                    first = cardNumber[i];
+                    mark = true;
+                } else if (cardNumber[i] == cardNumber[i + 1]) {
+                    second = cardNumber[i];
+                }
+            }
+            return "two pairs: " + first + " and " + second;
+        }
+        if (rank == 2) {
+            int number = -1;
+            for (int i = 0; i < cardNumber.length - 1; i++) {
+                if (cardNumber[i] == cardNumber[i + 1]) {
+                    number = cardNumber[i];
+                }
+            }
+            return "pair: " + number;
         }
         return null;
     }
