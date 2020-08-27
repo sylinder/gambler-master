@@ -3,15 +3,68 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
 
-        String input = "2H 3D 5S 9C KD 2C 3H 4S 8C AH";
+        String input = "3H 3D 3S 9C KD 2C 3H 4S 5C 6H";
         PokerCards blackPokerCards = new PokerCards();
         PokerCards whitePokerCards = new PokerCards();
+
+        handleInput(input, blackPokerCards, whitePokerCards);
+
+        int blackRank = getRank(blackPokerCards);
+        int whiteRank = getRank(whitePokerCards);
+        if (blackRank == whiteRank) {
+            handleEqualRank(blackRank, blackPokerCards, whitePokerCards);
+        } else if (blackRank > whiteRank) {
+            System.out.println("black win...");
+        } else {
+            System.out.println("white win..." + whiteRank);
+        }
+
 //        handleInput(input, blackCards, whiteCards);
 //
 //        handleHighCard(blackCards, whiteCards);
 
 //        System.out.println(blackCards);
 //        System.out.println(whiteCards);
+    }
+
+    public static String getTips(int rank) {
+        if (rank == 9) {
+
+        }
+        return null;
+    }
+
+
+    private static void handleEqualRank(int blackRank, PokerCards blackPokerCards, PokerCards whitePokerCards) {
+        System.out.println("equal rank...");
+    }
+
+    public static int getRank(PokerCards pokerCards) {
+        if (isStraightFlush(pokerCards)) {
+            return Rank.STRAIGHT_FLUSH.getRank();
+        }
+        if (isFour(pokerCards)) {
+            return Rank.FOUR_KIND.getRank();
+        }
+        if (isFullHouse(pokerCards)) {
+            return Rank.FULL_HOUSE.getRank();
+        }
+        if (isFlush(pokerCards)) {
+            return Rank.FLUSH.getRank();
+        }
+        if (isStraight(pokerCards)) {
+            return Rank.STRAIGHT.getRank();
+        }
+        if (isThree(pokerCards)) {
+            return Rank.THREE_KIND.getRank();
+        }
+        if (isTwoPair(pokerCards)) {
+            return Rank.TWO_PAIR.getRank();
+        }
+        if (isPair(pokerCards)) {
+            return Rank.PAIR.getRank();
+        }
+        return Rank.HIGH_CARD.getRank();
     }
 
     //handle high card
@@ -33,7 +86,7 @@ public class Main {
     }
 
 
-    public void handleInput(String input, PokerCards blackPokerCards, PokerCards whitePokerCards) {
+    public static void handleInput(String input, PokerCards blackPokerCards, PokerCards whitePokerCards) {
         String[] black = new String[5];
         String[] white = new String[5];
         String[] strings = input.split(" ");
@@ -66,7 +119,7 @@ public class Main {
     }
 
 
-    public int convertCharToNum(char ch) {
+    public static int convertCharToNum(char ch) {
         if (ch == 'T') {
             return 10;
         }
@@ -85,7 +138,7 @@ public class Main {
         return ch - '0';
     }
 
-    public String convertNumberToString(int number) {
+    public static String convertNumberToString(int number) {
         if (number == 14) {
             return "Ace";
         }
@@ -105,7 +158,11 @@ public class Main {
 
     public static boolean isPair(PokerCards pokerCards) {
         int[] cardNumber = pokerCards.getCardNumber();
-        return false;
+        Set<Integer> set = new HashSet<>();
+        for (Integer item : cardNumber) {
+            set.add(item);
+        }
+        return set.size() == 4;
     }
 
     public static boolean isTwoPair(PokerCards pokerCards) {
@@ -221,4 +278,10 @@ public class Main {
         }
         return set.size() == 1;
     }
+
+//    public static String getTips(PokerCards pokerCards) {
+//        if (isStraightFlush(pokerCards)) {
+//            return
+//        }
+//    }
 }
