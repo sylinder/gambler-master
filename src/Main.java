@@ -3,6 +3,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
 
+        String input = "2H 3D 5S 9C KD 2C 3h 4S 8C AH"; // high card
 //        String input = "3H 3D 3S 9C KD 2C 3C 4S 5C 6H"; //straight
 //        String input = "3H 3D 3S 9C KD 2C 2H 4S 4C 6H"; // three of kind
 //        String input = "3H 3D 4S 9C KD 2C 2H 4H 4C 6H"; //two pair
@@ -10,16 +11,27 @@ public class Main {
 //        String input = "3C 3D 4S 9C KD 2H 3H 9H 5H 6H"; //flush
 //        String input = "3C 3D 4S 9C KD 5C 5H 9S 9C 9H"; //full house
 //        String input = "3H 3D 4S 9C KD 9C 3S 9S 9C 9H"; //four of kind
-        String input = "3H 3D 4S 9C KD 5H 6H 7H 8H 9H"; // straight flush
+//        String input = "3H 3D 4S 9C KD 5H 6H 7H 8H 9H"; // straight flush
+
+
+//        String sameRankInput = "3H 4H 5H 6H 7H 9H TH JH QH KH"; // straight flush
+//        String sameRankInput = "3H 3S 3D 3C 7H 9S 9H 9D 9C KH"; // four of kind
+//        String sameRankInput = "3H 3S 3D 5C 5H 9S 9H 9D 2C 2H"; // full house
+//        String sameRankInput = "2H 3H 5H 7H KH 4H 8H 9H TH JH"; // flush
+//        String sameRankInput = "2H 3H 4D 5S 6H 7D 8H 9H TH JH"; // straight
+//        String sameRankInput = "7H 7C 7D 5S 6H 2D 2H 2C TH JH"; // three of a kind
+//        String sameRankInput = "7H 7C KD KS 6H 2D 2H 3C JC JH"; // two pairs
+
         PokerCards blackPokerCards = new PokerCards();
         PokerCards whitePokerCards = new PokerCards();
 
         handleInput(input, blackPokerCards, whitePokerCards);
+//        handleInput(sameRankInput, blackPokerCards, whitePokerCards);
 
         int blackRank = getRank(blackPokerCards);
         int whiteRank = getRank(whitePokerCards);
         if (blackRank == whiteRank) {
-            handleEqualRank(blackRank, blackPokerCards, whitePokerCards);
+            System.out.println(handleEqualRank(blackRank, blackPokerCards, whitePokerCards));
         } else if (blackRank > whiteRank) {
             String str = handleNoEqualRank(blackRank, blackPokerCards);
             System.out.println("black win. - with " + str);
@@ -91,8 +103,47 @@ public class Main {
     }
 
 
-    private static void handleEqualRank(int blackRank, PokerCards blackPokerCards, PokerCards whitePokerCards) {
-        System.out.println("equal rank...");
+    private static String handleEqualRank(int rank, PokerCards blackPokerCards, PokerCards whitePokerCards) {
+        int[] blackNumbers = blackPokerCards.getCardNumber();
+        int[] whiteNumbers = whitePokerCards.getCardNumber();
+        switch (rank) {
+            case 9:
+                return blackNumbers[4] > whiteNumbers[4] ? "Black win. - with straight flush: " + convertNumberToString(blackNumbers[4]) :
+                        "White win. - with straight flush: " + convertNumberToString(whiteNumbers[4]);
+
+            case 8:
+                return blackNumbers[2] > whiteNumbers[2] ? "Black win. - with four of a kind: " + convertNumberToString(blackNumbers[2]) :
+                        "White win. - with four of a kind: " + convertNumberToString(whiteNumbers[2]);
+
+            case 7:
+                return blackNumbers[2] > whiteNumbers[2] ? "Black win. - with full house: " + convertNumberToString(blackNumbers[2]) :
+                        "White win. - with full house: " + convertNumberToString(whiteNumbers[2]);
+
+            case 6:
+                return blackNumbers[4] > whiteNumbers[4] ? "Black win. - with flush: " + convertNumberToString(blackNumbers[4]) :
+                        "White win. - with flush: " + convertNumberToString(whiteNumbers[4]);
+
+            case 5:
+                return blackNumbers[4] > whiteNumbers[4] ? "Black win. - with straight: " + convertNumberToString(blackNumbers[4]) :
+                        "White win. - with straight: " + convertNumberToString(whiteNumbers[4]);
+
+            case 4:
+                return blackNumbers[2] > whiteNumbers[2] ? "Black win. - with three of a kind: " + convertNumberToString(blackNumbers[2]) :
+                        "White win. - with three of a kind: " + convertNumberToString(whiteNumbers[2]);
+
+            case 3:
+                return "a little annoying"; //need to consider two pair all equal, compare the single one.
+
+            case 2:
+                return "a little annoying too"; // reason like the former
+
+            case 1:
+                return blackNumbers[4] > whiteNumbers[4] ? "Black win. - with high card: " + convertNumberToString(blackNumbers[4]) :
+                        "White win. - with high card: " + convertNumberToString(whiteNumbers[4]);
+
+            default:
+                return null;
+        }
     }
 
     public static int getRank(PokerCards pokerCards) {
