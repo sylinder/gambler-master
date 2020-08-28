@@ -220,8 +220,9 @@ public class Main {
                 return "Tie"; // reason like the former
 
             case 1:
-                return blackNumbers[4] > whiteNumbers[4] ? "Black win. - with high card: " + convertNumberToString(blackNumbers[4]) :
-                        "White win. - with high card: " + convertNumberToString(whiteNumbers[4]);
+                return handleHighCard(blackPokerCards, whitePokerCards);
+//                return blackNumbers[4] > whiteNumbers[4] ? "Black win. - with high card: " + convertNumberToString(blackNumbers[4]) :
+//                        "White win. - with high card: " + convertNumberToString(whiteNumbers[4]);
 
             default:
                 return null;
@@ -257,21 +258,22 @@ public class Main {
     }
 
     //handle high card
-    public static void handleHighCard(PokerCards blackPokerCards, PokerCards whitePokerCards) {
+    public static String handleHighCard(PokerCards blackPokerCards, PokerCards whitePokerCards) {
         int[] blackCardNumbers = blackPokerCards.getCardNumber();
         int[] whiteCardNumbers = whitePokerCards.getCardNumber();
         for (int i = blackCardNumbers.length - 1; i >= 0; i--) {
             if (blackCardNumbers[i] > whiteCardNumbers[i]) {
                 int num = blackCardNumbers[i];
-                System.out.println("Black wins. - with high card: " + num);
-                return ;
+//                System.out.println("Black wins. - with high card: " + num);
+                return "Black wins. - with high card: " + num;
             } else if (blackCardNumbers[i] < whiteCardNumbers[i]) {
                 int num = blackCardNumbers[i];
-                System.out.println("White wins. - with high card: " + num);
-                return ;
+//                System.out.println("White wins. - with high card: " + num);
+                return "White wins. - with high card: " + num;
             }
         }
-        System.out.println("Tie");
+//        System.out.println("Tie");
+        return "Tie";
     }
 
 
