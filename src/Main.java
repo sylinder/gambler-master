@@ -3,7 +3,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
 
-        String input = "2H 3D 5S 9C KD 2C 3h 4S 8C AH"; // high card
+//        String input = "2H 3D 5S 9C KD 2C 3h 4S 8C AH"; // high card
 //        String input = "3H 3D 3S 9C KD 2C 3C 4S 5C 6H"; //straight
 //        String input = "3H 3D 3S 9C KD 2C 2H 4S 4C 6H"; // three of kind
 //        String input = "3H 3D 4S 9C KD 2C 2H 4H 4C 6H"; //two pair
@@ -21,12 +21,13 @@ public class Main {
 //        String sameRankInput = "2H 3H 4D 5S 6H 7D 8H 9H TH JH"; // straight
 //        String sameRankInput = "7H 7C 7D 5S 6H 2D 2H 2C TH JH"; // three of a kind
 //        String sameRankInput = "7H 7C KD KS 6H 2D 2H 3C JC JH"; // two pairs
+        String sameRankInput = "7H 7C 3D KS 6H 7D 7H 3C 4C JH"; // two pairs
 
         PokerCards blackPokerCards = new PokerCards();
         PokerCards whitePokerCards = new PokerCards();
 
-        handleInput(input, blackPokerCards, whitePokerCards);
-//        handleInput(sameRankInput, blackPokerCards, whitePokerCards);
+//        handleInput(input, blackPokerCards, whitePokerCards);
+        handleInput(sameRankInput, blackPokerCards, whitePokerCards);
 
         int blackRank = getRank(blackPokerCards);
         int whiteRank = getRank(whitePokerCards);
@@ -132,10 +133,91 @@ public class Main {
                         "White win. - with three of a kind: " + convertNumberToString(whiteNumbers[2]);
 
             case 3:
-                return "a little annoying"; //need to consider two pair all equal, compare the single one.
+                int blackFirstPair = -1, blackSecondPair = -1, blackSingleNumber = -1;
+                int whiteFirstPair = -1, whiteSecondPair = -1, whiteSingleNumber = -1;
+                int index = 0;
+                boolean flag = false;
+                while (index < blackNumbers.length - 1) {
+                    if (blackNumbers[index] == blackNumbers[index + 1] && !flag) {
+                        blackFirstPair = blackNumbers[index];
+                        flag = true;
+                        index += 2;
+                        continue;
+                    }
+                    if (blackNumbers[index] == blackNumbers[index + 1]) {
+                        blackSecondPair = blackNumbers[index];
+                        index += 2;
+                        continue;
+                    }
+                    blackSingleNumber = blackNumbers[index];
+                    index++;
+                }
+
+                index = 0;
+                flag = false;
+                while (index < whiteNumbers.length - 1) {
+                    if (whiteNumbers[index] == whiteNumbers[index + 1] && !flag) {
+                        whiteFirstPair = whiteNumbers[index];
+                        flag = true;
+                        index += 2;
+                        continue;
+                    }
+                    if (whiteNumbers[index] == whiteNumbers[index + 1]) {
+                        whiteSecondPair = whiteNumbers[index];
+                        index += 2;
+                        continue;
+                    }
+                    whiteSingleNumber = whiteNumbers[index];
+                    index++;
+                }
+
+                if (blackSecondPair > whiteSecondPair) {
+                    return "Black win. - with two pair: " + convertNumberToString(blackSecondPair);
+                } else if (whiteSecondPair > blackSecondPair) {
+                    return "White win. - with two pair: " + convertNumberToString(whiteSecondPair);
+                }
+                if (blackFirstPair > whiteFirstPair) {
+                    return "Black win. - with two pair: " + convertNumberToString(blackFirstPair);
+                } else if (whiteFirstPair > blackFirstPair) {
+                    return "White win. -with two pair: " + convertNumberToString(whiteFirstPair);
+                }
+                if (blackSingleNumber > whiteSingleNumber) {
+                    return "Black win. - with two pair: " + convertNumberToString(blackSingleNumber);
+                } else if (whiteSingleNumber > blackSingleNumber) {
+                    return "White win. - with two pair: " + convertNumberToString(whiteSingleNumber);
+                }
+                return "Tie"; //need to consider two pair all equal, compare the single one.
+                //need to refactor a lot . so ugly code.
 
             case 2:
-                return "a little annoying too"; // reason like the former
+                int blackPair = -1, blackSingle = -1;
+                int whitePair = -1, whiteSingle = -1;
+                for (int i = 0; i < blackNumbers.length - 1; i++) {
+                    if (blackNumbers[i] == blackNumbers[i+ 1]) {
+                        blackPair = blackNumbers[i];
+                        break;
+                    }
+                }
+                for (int i = 0; i < whiteNumbers.length - 1; i++) {
+                    if (whiteNumbers[i] == whiteNumbers[i + 1]) {
+                        whitePair = whiteNumbers[i];
+                        break;
+                    }
+                }
+                if (blackPair > whitePair) {
+                    return "Black win. - with pair: " + convertNumberToString(blackPair);
+                }
+                if (whitePair > blackPair) {
+                    return "White win. - with pair: " + convertNumberToString(whitePair);
+                }
+                for (int i = blackNumbers.length - 1; i >= 0; i--) {
+                    if (blackNumbers[i] > whiteNumbers[i]) {
+                        return "Black win. - with pair: " + convertNumberToString(blackNumbers[i]);
+                    } else if (blackNumbers[i] < whiteNumbers[i]) {
+                        return "White win. - with pair: " + convertNumberToString(whiteNumbers[i]);
+                    }
+                }
+                return "Tie"; // reason like the former
 
             case 1:
                 return blackNumbers[4] > whiteNumbers[4] ? "Black win. - with high card: " + convertNumberToString(blackNumbers[4]) :
